@@ -3,17 +3,17 @@ on:
   workflow_call:
     inputs:
         github_pat:
-        description: 'aws service'
-        type: string
-        required: true
+          description: 'aws service'
+          type: string
+          required: true
         task_definition:
-         description: 'aws task'
-         type: string
-         required: true
+          description: 'aws task'
+          type: string
+          required: true
         cluster:
-         description: 'aws cluster'
-         type: string
-         required: true
+          description: 'aws cluster'
+          type: string
+          required: true
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read    # This is required for actions/checkout
@@ -22,7 +22,6 @@ permissions:
 
 jobs:
   build:
-    pre-job:
       runs-on: ubuntu-latest
       steps:
   
@@ -38,8 +37,8 @@ jobs:
           github_pat: ${{ inputs.github_pat }}
           task_definition: ${{ inputs.task_definition }}
           cluster: ${{ inputs.cluster }}
-      actual-job:
-    runs-on: self-hosted
-    needs: pre-job
+  actual-job:
+      runs-on: self-hosted
+      needs: build
     steps:
        - run: echo hello 
