@@ -23,18 +23,24 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-
-    - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
+    pre-job:
+      runs-on: ubuntu-latest
+      steps:
+  
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
           role-to-assume: arn:aws:iam::676517230402:role/oiduc
           role-session-name: samplerolesession
           aws-region: us-east-1
-    - name: Provide a self hosted to execute this job
-      uses: PasseiDireto/gh-runner-task-action@main
-      with:
-        github_pat: ${{ inputs.github_pat }}
-        task_definition: ${{ inputs.task_definition }}
-        cluster: ${{ inputs.cluster }}
+      - name: Provide a self hosted to execute this job
+        uses: PasseiDireto/gh-runner-task-action@main
+        with:
+          github_pat: ${{ inputs.github_pat }}
+          task_definition: ${{ inputs.task_definition }}
+          cluster: ${{ inputs.cluster }}
+      actual-job:
+    runs-on: self-hosted
+    needs: pre-job
+    steps:
+       - run: echo hello 
