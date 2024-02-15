@@ -9,7 +9,6 @@ on:
         required: true
       task_definition:
         description: 'aws task'
-        type: string
         required: true
       cluster:
         description: 'aws cluster'
