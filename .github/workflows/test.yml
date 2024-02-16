@@ -40,6 +40,12 @@ jobs:
           task_definition: ${{ inputs.task_definition }}
           cluster: ${{ inputs.cluster }}
           task_params_file: ${{ inputs.task-params }}
+          network-configuration: |
+                awsvpcConfiguration={
+                  subnets=[subnet-12345678],
+                  securityGroups=[sg-abcdef01],
+                  assignPublicIp=ENABLED
+                }
 
 
   actual-job:
