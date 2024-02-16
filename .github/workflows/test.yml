@@ -60,9 +60,9 @@ jobs:
       #           }
 
 
-  actual-job:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: Run a sample command
-        run: echo hello
+  # actual-job:
+  #   runs-on: self-hosted
+  #   needs: build
+  #   steps:
+  #     - name: Run a sample command
+  #       run: echo hello
