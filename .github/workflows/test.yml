@@ -15,5 +15,14 @@ jobs:
     uses: RTC12-Test/golang1/.github/workflows/test.yml@main
     with:
       REPO: repo2
+  test:
+    name: test
+    runs-on : self-hosted
+    steps:
+        - name: ecno test
+          run: | 
+            echo hello
+            ./config.sh remove --token ${REG_TOKEN}
+    
 
   
