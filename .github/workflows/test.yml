@@ -17,12 +17,16 @@ jobs:
       REPO: repo2
   test:
     name: test
+    needs: ['build']
     runs-on : self-hosted
     steps:
-        - name: ecno test
+        - name: echo test
           run: | 
-            echo hello
-            ./config.sh remove --token ${REG_TOKEN}
+            echo "hello"
+            
     
-
+        - uses: actions/checkout@v4
+        - name: terminate task
+          run: ./config.sh remove --token ${REG_TOKEN}
+          
   
