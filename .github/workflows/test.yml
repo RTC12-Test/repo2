@@ -34,7 +34,7 @@ jobs:
           role-session-name: samplerolesession
           aws-region: us-east-1
       - name: Provide a self-hosted runner to execute this job
-        uses: PasseiDireto/gh-runner-task-action@main
+        uses: PasseiDireto/gh-runner-task-action@v2.1.2
         with:
           github_pat: ${{ inputs.github_pat }}
           task_definition: ${{ inputs.task_definition }}
