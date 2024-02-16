@@ -1,24 +1,8 @@
 name: test
-
 on:
-  workflow_call:
-    inputs:
-      github_pat:
-        description: 'aws service'
-        type: string
-        required: true
-      task_definition:
-        type: string
-        description: 'aws task'
-        required: true
-      cluster:
-        description: 'aws cluster'
-        type: string
-        required: true
-      task-params:
-        description: 'aws cluster'
-        type: string
-        required: true
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
       
 
 permissions:
@@ -27,27 +11,9 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::381492127440:role/oidc
-          role-session-name: samplerolesession
-          aws-region: us-east-1
+    name: run task
+    uses: RTC12-Test/golang1/.github/workflows/test.yml@main
+    with:
+      REPO: repo2
 
-      - name: Provide a self-hosted runner to execute this job
-        uses: PasseiDireto/gh-runner-task-action@main
-        with:
-          github_pat: ${{ inputs.github_pat }}
-          task_definition: ${{ inputs.task_definition }}
-          cluster: ${{ inputs.cluster }}
-          task_params_file: ${{ inputs.task-params }}
-          
-
-  actual-job:
-    runs-on: self-hosted
-    needs: build
-    steps:
-      - name: Run a sample command
-        run: echo hello
+  
