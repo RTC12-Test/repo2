@@ -2,10 +2,10 @@ name: test
 on:
   workflow_call:
     inputs:
-      github_pat:
-        description: 'aws service'
-        type: string
-        required: true
+      # github_pat:
+      #   description: 'aws service'
+      #   type: string
+      #   required: true
       task_definition:
         type: string
         description: 'aws task'
@@ -14,10 +14,15 @@ on:
         description: 'aws cluster'
         type: string
         required: true
-      task-params:
-        description: 'aws cluster'
+      REPO:
         type: string
+        description: 'aws task'
         required: true
+  
+      # task-params:
+      #   description: 'aws cluster'
+      #   type: string
+      #   required: true
 
 
 permissions:
@@ -45,6 +50,8 @@ jobs:
             subnet-05697ffd26b05cf4e
           security-group-ids: |
             sg-0aba0176f4107f2d7
+          override-container-environment: |
+            REPO=${{ inputs.REPO }}   
       # - name: Provide a self-hosted runner to execute this job
       #   uses: PasseiDireto/gh-runner-task-action@v2.1.2
       #   with:
