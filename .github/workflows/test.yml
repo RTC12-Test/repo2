@@ -1,36 +1,50 @@
 name: test
 on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
-      
+  workflow_call:
+    inputs:
+      github_pat:
+        description: 'aws service'
+        type: string
+        required: true
+      task_definition:
+        type: string
+        description: 'aws task'
+        required: true
+      cluster:
+        description: 'aws cluster'
+        type: string
+        required: true
+      task-params:
+        description: 'aws cluster'
+        type: string
+        required: true
+
 
 permissions:
   id-token: write   # This is required for requesting the JWT
   contents: read    # This is required for actions/checkout
-
 jobs:
   build:
-    name: run task
-    uses: RTC12-Test/golang1/.github/workflows/test.yml@main
-    with:
-      REPO: repo2
-  test:
-    name: test
-    needs: ['build']
-    runs-on : self-hosted
+    runs-on: ubuntu-latest
     steps:
-        - name: echo test
-          run: | 
-            echo "hello"
-            
-    
-        - uses: actions/checkout@v4
-        
-        - name: terminate task
-          run: |
-            REG_TOKEN=$(curl -sX POST -H "Authorization: Bearer $TOKEN"  -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/RTC12-Test/${{ github.event.repository.name }}/actions/runners/registration-token | jq .token --raw-output)
-            cd /home/docker/actions-runner/
-            ./config.sh remove --token $REG_TOKEN
-          
-  
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume:  arn:aws:iam::381492127440:role/oidc
+          role-session-name: samplerolesession
+          aws-region: us-east-1
+      - name: Provide a self-hosted runner to execute this job
+        uses: PasseiDireto/gh-runner-task-action@main
+        with:
+          github_pat: ${{ inputs.github_pat }}
+          task_definition: ${{ inputs.task_definition }}
+          cluster: ${{ inputs.cluster }}
+          task_params_file: ${{ inputs.task-params }}
+
+
+  actual-job:
+    runs-on: self-hosted
+    needs: build
+    steps:
+      - name: Run a sample command
+        run: echo hello
