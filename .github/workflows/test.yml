@@ -27,7 +27,7 @@ jobs:
     
         - uses: actions/checkout@v4
         - name: find ./config.sh
-          run: sudo find / -name ./config.sh
+          run: sudo find / -name config.sh
         # - name: terminate task
         #   run: ./config.sh remove --token ${REG_TOKEN}
           
