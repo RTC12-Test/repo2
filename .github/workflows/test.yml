@@ -33,19 +33,31 @@ jobs:
           role-to-assume:  arn:aws:iam::381492127440:role/oidc
           role-session-name: samplerolesession
           aws-region: us-east-1
-      - name: Provide a self-hosted runner to execute this job
-        uses: PasseiDireto/gh-runner-task-action@v2.1.2
+
+      - name: launch
+        id: run-task
+        uses: geekcell/github-action-aws-ecs-run-task@v3.0.0
         with:
-          github_pat: ${{ inputs.github_pat }}
-          task_definition: ${{ inputs.task_definition }}
           cluster: ${{ inputs.cluster }}
-          task_params_file: ${{ inputs.task-params }}
-          network-configuration: |
-                awsvpcConfiguration={
-                  subnets=[subnet-12345678],
-                  securityGroups=[sg-abcdef01],
-                  assignPublicIp=ENABLED
-                }
+          task-definition: ${{ inputs.task_definition }}
+          assign-public-ip: 'ENABLED'
+          subnet-ids: |
+            subnet-05697ffd26b05cf4e
+          security-group-ids: |
+            sg-0aba0176f4107f2d7
+      # - name: Provide a self-hosted runner to execute this job
+      #   uses: PasseiDireto/gh-runner-task-action@v2.1.2
+      #   with:
+      #     github_pat: ${{ inputs.github_pat }}
+      #     task_definition: ${{ inputs.task_definition }}
+      #     cluster: ${{ inputs.cluster }}
+      #     task_params_file: ${{ inputs.task-params }}
+      #     network-configuration: |
+      #           awsvpcConfiguration={
+      #             subnets=[subnet-12345678],
+      #             securityGroups=[sg-abcdef01],
+      #             assignPublicIp=ENABLED
+      #           }
 
 
   actual-job:
