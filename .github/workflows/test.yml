@@ -15,9 +15,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: echo inputs
-        run: | 
-             echo ${{ inputs.env_variables }} | awk '{print $2}'
+     
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::637423372838:role/aravind15b_oidc
+          role-session-name: samplerolesession       
+      - name: Update the latest image tag
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+         task-definition: task-definition.json
+         container-name: test 
+         image: 37423372838.dkr.ecr.us-east-1.amazonaws.com/golangserver:latest
+         environment-variables: ${{ inputs.env_variables }}        
       # - name: configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
       #   with:
