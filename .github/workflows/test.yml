@@ -21,13 +21,14 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::637423372838:role/aravind15b_oidc
-          role-session-name: samplerolesession       
+          role-session-name: samplerolesession    
+          aws-region: us-east-1 
       - name: Update the latest image tag
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
          task-definition: task-definition.json
-         container-name: test 
+         container-name: golang 
          image: 37423372838.dkr.ecr.us-east-1.amazonaws.com/golangserver:latest
          environment-variables: ${{ inputs.env_variables }}        
       # - name: configure aws credentials
