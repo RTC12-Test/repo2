@@ -2,40 +2,22 @@ name: test
 on:
   workflow_call:
     inputs:
-      # github_pat:
-      #   description: 'aws service'
-      #   type: string
-      #   required: true
+      
       env_variables:
         type: string
         description: 'aws task'
         required: true
       # cluster:
-      #   description: 'aws cluster'
-      #   type: string
-      #   required: true
-      # REPO:
-      #   type: string
-      #   description: 'aws task'
-      #   required: true
-  
-      # task-params:
-      #   description: 'aws cluster'
-      #   type: string
-      #   required: true
+    
 
 
-permissions:
-  id-token: write   # This is required for requesting the JWT
-  contents: read    # This is required for actions/checkout
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: echo inputs
         run: | 
-            echo ${{ inputs.env_variables[0] }}
-            echo ${{ inputs.env_variables[1] }}
+             echo ${{ inputs.env_variables }} | awk '{print $2}'
       # - name: configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
       #   with:
