@@ -6,18 +6,18 @@ on:
       #   description: 'aws service'
       #   type: string
       #   required: true
-      task_definition:
+      env_variables:
         type: string
         description: 'aws task'
         required: true
-      cluster:
-        description: 'aws cluster'
-        type: string
-        required: true
-      REPO:
-        type: string
-        description: 'aws task'
-        required: true
+      # cluster:
+      #   description: 'aws cluster'
+      #   type: string
+      #   required: true
+      # REPO:
+      #   type: string
+      #   description: 'aws task'
+      #   required: true
   
       # task-params:
       #   description: 'aws cluster'
@@ -32,26 +32,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume:  arn:aws:iam::381492127440:role/oidc
-          role-session-name: samplerolesession
-          aws-region: us-east-1
+      - name: echo inputs
+        run: echo ${{ inputs.env_variables }}
+      # - name: configure aws credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     role-to-assume:  arn:aws:iam::381492127440:role/oidc
+      #     role-session-name: samplerolesession
+      #     aws-region: us-east-1
 
-      - name: launch
-        id: run-task
-        uses: geekcell/github-action-aws-ecs-run-task@v3.0.0
-        with:
-          cluster: ${{ inputs.cluster }}
-          task-definition: ${{ inputs.task_definition }}
-          assign-public-ip: 'ENABLED'
-          subnet-ids: |
-            subnet-05697ffd26b05cf4e
-          security-group-ids: |
-            sg-0aba0176f4107f2d7
-          override-container-environment: |
-            REPO=${{ inputs.REPO }}   
+      # - name: launch
+      #   id: run-task
+      #   uses: geekcell/github-action-aws-ecs-run-task@v3.0.0
+      #   with:
+      #     cluster: ${{ inputs.cluster }}
+      #     task-definition: ${{ inputs.task_definition }}
+      #     assign-public-ip: 'ENABLED'
+      #     subnet-ids: |
+      #       subnet-05697ffd26b05cf4e
+      #     security-group-ids: |
+      #       sg-0aba0176f4107f2d7
+      #     override-container-environment: |
+      #       REPO=${{ inputs.REPO }}   
       # - name: Provide a self-hosted runner to execute this job
       #   uses: PasseiDireto/gh-runner-task-action@v2.1.2
       #   with:
