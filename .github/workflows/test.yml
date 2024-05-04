@@ -34,8 +34,8 @@ jobs:
     steps:
       - name: echo inputs
         run: | 
-            echo ${{ inputs.env_variables }}
-            echo ${{ inputs.env_variables }}
+            echo ${{ inputs.env_variables[0] }}
+            echo ${{ inputs.env_variables[1] }}
       # - name: configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
       #   with:
