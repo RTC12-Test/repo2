@@ -34,7 +34,7 @@ jobs:
          task-definition: task-definition.json
          container-name: golang 
          image: 37423372838.dkr.ecr.us-east-1.amazonaws.com/golangserver:latest
-         environment-variables: $${{ toYAML(inputs.env_variables) }}"       
+         environment-variables: ${(inputs.env_variables) }}
       # - name: configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
       #   with:
