@@ -27,6 +27,10 @@ jobs:
           role-to-assume: arn:aws:iam::637423372838:role/aravind15b_oidc
           role-session-name: samplerolesession    
           aws-region: us-east-1 
+      
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition golangserver --query taskDefinition --output json > task-definition.json    
       - name: Update the latest image tag
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
