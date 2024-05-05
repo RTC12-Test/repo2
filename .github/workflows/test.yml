@@ -21,24 +21,26 @@ jobs:
         with:
            fetch-depth: 0
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: arn:aws:iam::637423372838:role/aravind15b_oidc
-          role-session-name: samplerolesession    
-          aws-region: us-east-1 
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     role-to-assume: arn:aws:iam::637423372838:role/aravind15b_oidc
+      #     role-session-name: samplerolesession    
+      #     aws-region: us-east-1 
       
-      - name: Download task definition
-        run: |
-          aws ecs describe-task-definition --task-definition golangserver --query taskDefinition --output json > task-definition.json    
-      - name: Update the latest image tag
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-         task-definition: task-definition.json
-         container-name: golang 
-         image: 37423372838.dkr.ecr.us-east-1.amazonaws.com/golangserver:latest
-         environment-variables: ${(inputs.env_variables }}
+      # - name: Download task definition
+      #   run: |
+      #     aws ecs describe-task-definition --task-definition golangserver --query taskDefinition --output json > task-definition.json    
+      # - name: Update the latest image tag
+      #   id: task-def
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #    task-definition: task-definition.json
+      #    container-name: golang 
+      #    image: 37423372838.dkr.ecr.us-east-1.amazonaws.com/golangserver:latest
+      #    environment-variables: ${(inputs.env_variables }}
+      - name: get github repo 
+        run: echo $GITHUB_REPOSITORY
       # - name: configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
       #   with:
