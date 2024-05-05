@@ -39,7 +39,8 @@ jobs:
       #    container-name: golang 
       #    image: 37423372838.dkr.ecr.us-east-1.amazonaws.com/golangserver:latest
       #    environment-variables: ${(inputs.env_variables }}
-      - name: get github repo 
+      - name: get github repo
+        if: ${{ github.respository == "RTC12-Test/golang1" }}
         run: echo $GITHUB_REPOSITORY
       # - name: configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
