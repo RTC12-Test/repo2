@@ -48,8 +48,8 @@ jobs:
       - name: Getting the image-tag
         id: image-tag
         run: |
-          task_definition=$(aws ecs describe-task-definition --task-definition ${{ inputs.task-name }} --query "taskDefinition.containerDefinitions[0].image" --output text  2> /dev/null || "not" )
-           if [[  task_definition == "not"  ]]; then
+          task_definition=$(aws ecs describe-task-definition --task-definition ${{ inputs.task-name }} --query "taskDefinition.containerDefinitions[0].image" --output text  2> /dev/null || not="not" )
+           if [[  task_definition == not  ]]; then
               image_tag=latest
               echo $image_tag
               echo "image=$image_tag" >> $GITHUB_OUTPUT
