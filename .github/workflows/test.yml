@@ -35,9 +35,14 @@ jobs:
           role-to-assume: ${{ inputs.role-to-assume }}
           role-session-name: ${{ inputs.role-session-name }}
           aws-region: ${{ inputs.aws-region-name }}
-
-      - name: Install AWS CLI
-        uses: aws-actions/setup-aws-cli@v2
+      # Install  aws cli
+      - name: Install AWS cli
+        id: install-aws-cli
+        uses: unfor19/install-aws-cli-action@v1
+        with:
+          version: 2
+          verbose: false
+          arch: amd64
 
         # Getting image tag
       - name: Getting the image-tag
