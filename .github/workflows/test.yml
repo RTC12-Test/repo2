@@ -48,7 +48,7 @@ jobs:
       - name: Getting the image-tag
         id: image-tag
         run: |
-          task_definition=$(aws ecs describe-task-definition --task-definition ${{ inputs.task-name }} --query "taskDefinition.containerDefinitions[0].image" --output text 2>--output text 2>&1)
+          task_definition=$(aws ecs describe-task-definition --task-definition ${{ inputs.task-name }} --query "taskDefinition.containerDefinitions[0].image" --output text 2>--output text 2>&1 || true)
            if [[  $? -ne 0  ]]; then
               image_tag=latest
               echo $image_tag
