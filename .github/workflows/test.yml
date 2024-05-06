@@ -1,86 +1,63 @@
-name: test
+name: Image check
 on:
   workflow_call:
     inputs:
-      
-      env_variables:
-        type: string 
-        description: 'aws task'
+      service-name:
+        description: "aws service name"
+        type: string
         required: true
-      # cluster:
-    
-
+      role-to-assume:
+        type: string
+        required: true
+        description: role arn
+      role-session-name:
+        type: string
+        required: true
+        description: role session name
+      task-name:
+        description: "aws task"
+        type: string
+        required: true
+      cluster-name:
+        description: "aws cluster name"
+        type: string
+        required: true
+      aws-region-name:
+        type: string
+        required: true
+        description: aws region name
+    outputs:
+      image-tag:
+        value: ${{ jobs.image-tag.outputs.image-tag }}
 
 jobs:
-  build:
+  image-tag:
     runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.image-tag.outputs.image }}
     steps:
-     
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # Logging to aws
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         with:
-           fetch-depth: 0
+          role-to-assume: ${{ inputs.role-to-assume }}
+          role-session-name: ${{ inputs.role-session-name }}
+          aws-region: ${{ inputs.aws-region-name }}
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     role-to-assume: arn:aws:iam::637423372838:role/aravind15b_oidc
-      #     role-session-name: samplerolesession    
-      #     aws-region: us-east-1 
-      
-      # - name: Download task definition
-      #   run: |
-      #     aws ecs describe-task-definition --task-definition golangserver --query taskDefinition --output json > task-definition.json    
-      # - name: Update the latest image tag
-      #   id: task-def
-      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
-      #   with:
-      #    task-definition: task-definition.json
-      #    container-name: golang 
-      #    image: 37423372838.dkr.ecr.us-east-1.amazonaws.com/golangserver:latest
-      #    environment-variables: ${(inputs.env_variables }}
-      - name: Get GitHub repo
-        if: ${{ github.repository == 'RTC12-Test/golang1' }}
-        run: echo ${{ github.repository }}
+      - name: Install AWS CLI
+        uses: aws-actions/setup-aws-cli@v2
 
-      # - name: configure aws credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     role-to-assume:  arn:aws:iam::381492127440:role/oidc
-      #     role-session-name: samplerolesession
-      #     aws-region: us-east-1
-
-      # - name: launch
-      #   id: run-task
-      #   uses: geekcell/github-action-aws-ecs-run-task@v3.0.0
-      #   with:
-      #     cluster: ${{ inputs.cluster }}
-      #     task-definition: ${{ inputs.task_definition }}
-      #     assign-public-ip: 'ENABLED'
-      #     subnet-ids: |
-      #       subnet-05697ffd26b05cf4e
-      #     security-group-ids: |
-      #       sg-0aba0176f4107f2d7
-      #     override-container-environment: |
-      #       REPO=${{ inputs.REPO }}   
-      # - name: Provide a self-hosted runner to execute this job
-      #   uses: PasseiDireto/gh-runner-task-action@v2.1.2
-      #   with:
-      #     github_pat: ${{ inputs.github_pat }}
-      #     task_definition: ${{ inputs.task_definition }}
-      #     cluster: ${{ inputs.cluster }}
-      #     task_params_file: ${{ inputs.task-params }}
-      #     network-configuration: |
-      #           awsvpcConfiguration={
-      #             subnets=[subnet-12345678],
-      #             securityGroups=[sg-abcdef01],
-      #             assignPublicIp=ENABLED
-      #           }
-
-
-  # actual-job:
-  #   runs-on: self-hosted
-  #   needs: build
-  #   steps:
-  #     - name: Run a sample command
-  #       run: echo hello
+        # Getting image tag
+      - name: Getting the image-tag
+        if: steps.server-status.outputs.service_status == 'true'
+        id: image-tag
+        run: |
+          task_definition=$(aws ecs describe-task-definition --task-definition ${{ inputs.task-name }} --query "taskDefinition.containerDefinitions[0].image" --output text 2> || echo "task-definition not found")
+          if [[ task_definition == "task-definition not found" ]]; then
+            image_tag=latest
+            echo "image=$image_tag" >> $GITHUB_OUTPUT
+          else
+            image_tag=$(echo $task_definition | awk -F ':' '{print $2}')
+            echo $image_tag
+            echo "image=$image_tag" >> $GITHUB_OUTPUT
+          fi
