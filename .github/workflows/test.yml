@@ -51,6 +51,7 @@ jobs:
           task_definition=$(aws ecs describe-task-definition --task-definition ${{ inputs.task-name }} --query "taskDefinition.containerDefinitions[0].image" --output text 2> /dev/null || echo "task-definition not found")
           if [[ task_definition == "task-definition not found" ]]; then
             image_tag=latest
+            echo $image_tag
             echo "image=$image_tag" >> $GITHUB_OUTPUT
           else
             image_tag=$(echo $task_definition | awk -F ':' '{print $2}')
