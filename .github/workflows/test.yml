@@ -1,11 +1,7 @@
 name: Image check
 on:
   workflow_call:
-    inputs:
-      service-name:
-        description: "aws service name"
-        type: string
-        required: true
+    inputs: 
       role-to-assume:
         type: string
         required: true
@@ -16,10 +12,6 @@ on:
         description: role session name
       task-name:
         description: "aws task"
-        type: string
-        required: true
-      cluster-name:
-        description: "aws cluster name"
         type: string
         required: true
       aws-region-name:
