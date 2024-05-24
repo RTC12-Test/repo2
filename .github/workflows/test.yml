@@ -1,60 +1,60 @@
-name: Image check
+name: test
 on:
   workflow_call:
-    inputs: 
-      role-to-assume:
+    inputs:
+      task_definition:
+        type: string
+        description: 'aws task'
+        required: true
+      cluster:
+        description: 'aws cluster'
         type: string
         required: true
-        description: role arn
-      role-session-name:
-        type: string
-        required: true
-        description: role session name
-      task-name:
-        description: "aws task"
-        type: string
-        required: true
-      aws-region-name:
-        type: string
-        required: true
-        description: aws region name
-    outputs:
-      image-tag:
-        value: ${{ jobs.image-tag.outputs.image-tag }}
 
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
 jobs:
-  image-tag:
+  build:
     runs-on: ubuntu-latest
-    outputs:
-      image-tag: ${{ steps.image-tag.outputs.image }}
     steps:
-      # Logging to aws
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4.0.2
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ inputs.role-to-assume }}
-          role-session-name: ${{ inputs.role-session-name }}
-          aws-region: ${{ inputs.aws-region-name }}
-      # Install  aws cli
-      - name: Install AWS cli
-        id: install-aws-cli
-        uses: unfor19/install-aws-cli-action@v1
-        with:
-          version: 2
-          verbose: false
-          arch: amd64
+          role-to-assume:  arn:aws:iam::637423372838:role/aravind15b_oidc
+          role-session-name: samplerolesession
+          aws-region: us-east-1
 
-        # Getting image tag
-      - name: Getting the image-tag
-        id: image-tag
-        run: |
-          task_definition=$(aws ecs describe-task-definition --task-definition ${{ inputs.task-name }} --query "taskDefinition.containerDefinitions[0].image" --output text  2> /dev/null || echo "not" )
-           if [[  $task_definition == "not"  ]]; then
-              image_tag=latest
-              echo $image_tag
-              echo "image=$image_tag" >> $GITHUB_OUTPUT
-          else
-            image_tag=$(echo $task_definition | awk -F ':' '{print $2}')
-            echo $image_tag
-            echo "image=$image_tag" >> $GITHUB_OUTPUT
-          fi
+      - name: launch
+        id: run-task
+        uses: geekcell/github-action-aws-ecs-run-task@v3.0.0
+        with:
+          cluster: ${{ inputs.cluster }}
+          task-definition: ${{ inputs.task_definition }}
+          assign-public-ip: 'ENABLED'
+          subnet-ids: |
+           	subnet-0d19578bca5c64c0b
+          # security-group-ids: |
+          #   sg-0aba0176f4107f2d7
+      # - name: Provide a self-hosted runner to execute this job
+      #   uses: PasseiDireto/gh-runner-task-action@v2.1.2
+      #   with:
+      #     github_pat: ${{ inputs.github_pat }}
+      #     task_definition: ${{ inputs.task_definition }}
+      #     cluster: ${{ inputs.cluster }}
+      #     task_params_file: ${{ inputs.task-params }}
+      #     network-configuration: |
+      #           awsvpcConfiguration={
+      #             subnets=[subnet-12345678],
+      #             securityGroups=[sg-abcdef01],
+      #             assignPublicIp=ENABLED
+      #           }
+
+
+  # actual-job:
+  #   runs-on: self-hosted
+  #   needs: build
+  #   steps:
+  #     - name: Run a sample command
+  #       run: echo hello
