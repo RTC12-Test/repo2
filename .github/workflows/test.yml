@@ -39,8 +39,8 @@ jobs:
           override-container-environment: |
                REPO=${{ github.event.repository.name }}   
   
-          # security-group-ids: |
-          #   sg-0aba0176f4107f2d7
+          security-group-ids: |
+            sgr-02cb91d1d13faa832
       # - name: Provide a self-hosted runner to execute this job
       #   uses: PasseiDireto/gh-runner-task-action@v2.1.2
       #   with:
