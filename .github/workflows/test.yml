@@ -37,7 +37,7 @@ jobs:
             subnet-0d19578bca5c64c0b
 
           override-container-environment: |
-               REPO=golang1   
+               REPO=${{ github.event.repository.name }}   
   
           security-group-ids: |
             sg-01ae387b5b393c116
@@ -55,10 +55,18 @@ jobs:
       #             assignPublicIp=ENABLED
       #           }
 
-
-  actual-job:
-    runs-on: ${{ github.event.repository.name }}
-    needs: build
-    steps:
-      - name: Run a sample command
-        run: echo hello
+  execute_tests:
+        runs-on: ${{ github.event.repository.name }}
+        name: execute test cases
+        steps:
+       
+            
+          # remove the runner
+         - name: remove runner
+           run: |
+            echo "hello"
+            reg_token=$(curl -sx post -h "authorization: bearer "${{ secrets.acs_pat_read_github_packages }}""  -h "accept: application/vnd.github+json" -h "x-github-api-version: 2022-11-28" https://api.github.com/repos/americanchemicalsociety/${{ github.event.repository.name }}/actions/runners/registration-token | jq .token --raw-output)
+            cd /home/docker/actions-runner
+            rm -rf .runner 
+            ./config.sh remove --token $reg_token
+           if: always() 
