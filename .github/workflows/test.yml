@@ -34,7 +34,10 @@ jobs:
           task-definition: ${{ inputs.task_definition }}
           assign-public-ip: 'ENABLED'
           subnet-ids: |
-           	subnet-0d19578bca5c64c0b
+           	subnet-0d19578bca5c64c0b        
+          override-container-environment: |
+            REPO=${{ github.event.repository.name }}   
+  
           # security-group-ids: |
           #   sg-0aba0176f4107f2d7
       # - name: Provide a self-hosted runner to execute this job
@@ -52,9 +55,9 @@ jobs:
       #           }
 
 
-  # actual-job:
-  #   runs-on: self-hosted
-  #   needs: build
-  #   steps:
-  #     - name: Run a sample command
-  #       run: echo hello
+  actual-job:
+    runs-on: ${{ github.event.repository.name }}
+    needs: build
+    steps:
+      - name: Run a sample command
+        run: echo hello
