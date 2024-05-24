@@ -33,8 +33,10 @@ jobs:
           cluster: ${{ inputs.cluster }}
           task-definition: ${{ inputs.task_definition }}
           assign-public-ip: 'ENABLED'
+          
           subnet-ids: |
            	  subnet-0d19578bca5c64c0b        
+              
           override-container-environment: |
                REPO=${{ github.event.repository.name }}   
   
