@@ -63,14 +63,14 @@ jobs:
         runs-on: ${{ github.event.repository.name }}
         name: execute test cases
         steps:
-       
+          - name: test
+            run: echo test
             
           # remove the runner
-         - name: remove runner
-           run: |
-            echo "hello"
-            reg_token=$(curl -sx post -h "authorization: bearer "${{ inputs.token }}""  -h "accept: application/vnd.github+json" -h "x-github-api-version: 2022-11-28" https://api.github.com/repos/americanchemicalsociety/${{ github.event.repository.name }}/actions/runners/registration-token | jq .token --raw-output)
-            cd /home/docker/actions-runner
-            rm -rf .runner 
-            ./config.sh remove --token $reg_token
-           if: always() 
+          - name: remove runner
+            run: |
+             reg_token=$(curl -sx post -h "authorization: bearer "${{ inputs.token }}""  -h "accept: application/vnd.github+json" -h "x-github-api-version: 2022-11-28" https://api.github.com/repos/americanchemicalsociety/${{ github.event.repository.name }}/actions/runners/registration-token | jq .token --raw-output)
+             cd /home/docker/actions-runner
+             rm -rf .runner 
+             ./config.sh remove --token $reg_token
+            if: always() 
