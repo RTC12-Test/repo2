@@ -10,6 +10,10 @@ on:
         description: 'aws cluster'
         type: string
         required: true
+      token: 
+       description: 'aws cluster'
+       type: string
+       required: true
 
 
 permissions:
@@ -65,7 +69,7 @@ jobs:
          - name: remove runner
            run: |
             echo "hello"
-            reg_token=$(curl -sx post -h "authorization: bearer "${{ secrets.acs_pat_read_github_packages }}""  -h "accept: application/vnd.github+json" -h "x-github-api-version: 2022-11-28" https://api.github.com/repos/americanchemicalsociety/${{ github.event.repository.name }}/actions/runners/registration-token | jq .token --raw-output)
+            reg_token=$(curl -sx post -h "authorization: bearer "${{ inputs.token }}""  -h "accept: application/vnd.github+json" -h "x-github-api-version: 2022-11-28" https://api.github.com/repos/americanchemicalsociety/${{ github.event.repository.name }}/actions/runners/registration-token | jq .token --raw-output)
             cd /home/docker/actions-runner
             rm -rf .runner 
             ./config.sh remove --token $reg_token
