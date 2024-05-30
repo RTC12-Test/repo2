@@ -41,7 +41,8 @@ jobs:
             subnet-0d19578bca5c64c0b
 
           override-container-environment: |
-               REPO=${{ github.event.repository.name }}   
+               REPO=${{ github.event.repository.name }}
+               TOKEN=$(( inputs.token }}
   
           security-group-ids: |
             sg-01ae387b5b393c116
