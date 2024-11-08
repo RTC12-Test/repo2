@@ -1,4 +1,4 @@
-name: test
+name: Repo2
 on:
   repository_dispatch:
     types: [hello]
