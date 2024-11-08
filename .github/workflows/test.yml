@@ -1,7 +1,7 @@
 name: test
 on:
-  repository_dispatch:
-    types: [hello]
+  # repository_dispatch:
+  #   types: [hello]
   workflow_call:
     inputs:
       task_definition:
