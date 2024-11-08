@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Echo ${{ github.event.client_payload.env }}
+      - name: Echo ${{ github.event.client_payload.env }} environment
         run: echo Repo2 ${{ github.event.client_payload.env }}
 
       
